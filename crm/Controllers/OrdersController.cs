@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using crm.Data;
 using crm.Models;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace crm.Controllers
 {
@@ -21,14 +22,16 @@ namespace crm.Controllers
         }
 
         // GET: Orders
-        public async Task<IActionResult> Index()
+        [Authorize(Roles = "Admin, User")]
+        public async Task<IActionResult> Index(int? id)
         {
-              return _context.Orders != null ? 
+            return _context.Orders != null ? 
                           View(await _context.Orders.ToListAsync()) :
                           Problem("Entity set 'ApplicationDbContext.Orders'  is null.");
         }
 
         // GET: Orders/Details/5
+        [Authorize(Roles = "Admin, User")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.Orders == null)
@@ -47,7 +50,7 @@ namespace crm.Controllers
         }
 
         // GET: Orders/Create
-        [Authorize]
+        [Authorize(Roles = "Admin, User")]
         public IActionResult Create()
         {
             return View();
@@ -56,7 +59,7 @@ namespace crm.Controllers
         // POST: Orders/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [Authorize]
+        [Authorize(Roles = "Admin, User")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,OrderDate,CustomerId,CompanyId")] Orders orders)
@@ -71,7 +74,7 @@ namespace crm.Controllers
         }
 
         // GET: Orders/Edit/5
-        [Authorize]
+        [Authorize(Roles = "Admin, User")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Orders == null)
@@ -90,7 +93,7 @@ namespace crm.Controllers
         // POST: Orders/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [Authorize]
+        [Authorize(Roles = "Admin, User")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,OrderDate,CustomerId,CompanyId")] Orders orders)
@@ -124,7 +127,7 @@ namespace crm.Controllers
         }
 
         // GET: Orders/Delete/5
-        [Authorize]
+        [Authorize(Roles = "Admin, User")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Orders == null)
@@ -143,7 +146,7 @@ namespace crm.Controllers
         }
 
         // POST: Orders/Delete/5
-        [Authorize]
+        [Authorize(Roles = "Admin, User")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

@@ -21,7 +21,7 @@ namespace crm.Controllers
         }
 
         // GET: Companies
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
               return _context.Company != null ? 
@@ -30,7 +30,7 @@ namespace crm.Controllers
         }
 
         // GET: Companies/Details/5
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.Company == null)
@@ -49,7 +49,7 @@ namespace crm.Controllers
         }
 
         // GET: Companies/Create
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             return View();
@@ -58,7 +58,7 @@ namespace crm.Controllers
         // POST: Companies/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,Address,Email,cif")] Company company)
@@ -73,7 +73,7 @@ namespace crm.Controllers
         }
 
         // GET: Companies/Edit/5
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Company == null)
@@ -92,7 +92,7 @@ namespace crm.Controllers
         // POST: Companies/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Address,Email,cif")] Company company)
@@ -126,7 +126,7 @@ namespace crm.Controllers
         }
 
         // GET: Companies/Delete/5
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Company == null)
@@ -145,7 +145,7 @@ namespace crm.Controllers
         }
 
         // POST: Companies/Delete/5
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

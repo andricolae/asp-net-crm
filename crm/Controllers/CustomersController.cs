@@ -21,12 +21,14 @@ namespace crm.Controllers
         }
 
         // GET: Customers
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
               return _context.Customer != null ? 
                           View(await _context.Customer.ToListAsync()) :
                           Problem("Entity set 'ApplicationDbContext.Customer'  is null.");
         }
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ShowSearch()
         {
             return _context.Customer != null ?
@@ -35,12 +37,15 @@ namespace crm.Controllers
         }
 
         //POST
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ShowSearchResults(String SearchItem)
         {
             return View("Index", await _context.Customer.Where(c => c.FirstName.Contains(SearchItem)).ToListAsync());
         }
 
         // GET: Customers/Details/5
+        [Authorize(Roles = "Admin")]
+
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.Customer == null)
@@ -59,7 +64,7 @@ namespace crm.Controllers
         }
 
         // GET: Customers/Create
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             return View();
@@ -68,7 +73,7 @@ namespace crm.Controllers
         // POST: Customers/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,FirstName,LastName,Email,Phone,Address")] Customer customer)
@@ -83,7 +88,7 @@ namespace crm.Controllers
         }
 
         // GET: Customers/Edit/5
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Customer == null)
@@ -102,7 +107,7 @@ namespace crm.Controllers
         // POST: Customers/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,FirstName,LastName,Email,Phone,Address")] Customer customer)
@@ -136,7 +141,7 @@ namespace crm.Controllers
         }
 
         // GET: Customers/Delete/5
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Customer == null)
@@ -155,7 +160,7 @@ namespace crm.Controllers
         }
 
         // POST: Customers/Delete/5
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

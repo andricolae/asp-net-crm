@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using crm.Data;
 using crm.Models;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace crm.Controllers
 {
@@ -20,17 +21,24 @@ namespace crm.Controllers
             _context = context;
         }
 
+        public string GetCurrentUserId()
+        {
+            return User.FindFirstValue(ClaimTypes.NameIdentifier);
+        }
         // GET: Complaints
-        [Authorize]
+        [Authorize(Roles = "Admin, User")]
         public async Task<IActionResult> Index()
         {
-              return _context.Complaints != null ? 
-                          View(await _context.Complaints.ToListAsync()) :
-                          Problem("Entity set 'ApplicationDbContext.Complaints'  is null.");
+            var userComplaints = _context.Complaints.Where(c => c.UserId == GetCurrentUserId()).ToList();
+
+            return View(userComplaints);
+            //return _context.Complaints != null ? 
+            //              View(await _context.Complaints.ToListAsync()) :
+            //              Problem("Entity set 'ApplicationDbContext.Complaints'  is null.");
         }
 
         // GET: Complaints/Details/5
-        [Authorize]
+        [Authorize(Roles = "Admin, User")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.Complaints == null)
@@ -49,31 +57,48 @@ namespace crm.Controllers
         }
 
         // GET: Complaints/Create
-        [Authorize]
+        [Authorize(Roles = "Admin, User")]
         public IActionResult Create()
         {
+            ViewBag.UserId = GetCurrentUserId();
             return View();
         }
 
         // POST: Complaints/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [Authorize]
+        [Authorize(Roles = "Admin, User")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,CustomerId,CompanyId,Description,Status")] Complaints complaints)
+        public async Task<IActionResult> Create([Bind("Id,CustomerId,CompanyId,Description,Status,UserId")] Complaints complaints)
         {
+            complaints.CustomerId = 0;
+            complaints.CompanyId = 0;
+            complaints.Description = Request.Form["Description"].ToString();
+            complaints.Status = "registered";
+            complaints.UserId = GetCurrentUserId();
+
             if (ModelState.IsValid)
             {
                 _context.Add(complaints);
                 await _context.SaveChangesAsync();
+
                 return RedirectToAction(nameof(Index));
             }
+
             return View(complaints);
+
+            //if (ModelState.IsValid)
+            //{
+            //    _context.Add(complaints);
+            //    await _context.SaveChangesAsync();
+            //    return RedirectToAction(nameof(Index));
+            //}
+            //return View(complaints);
         }
 
         // GET: Complaints/Edit/5
-        [Authorize]
+        [Authorize(Roles = "Admin, User")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Complaints == null)
@@ -92,7 +117,7 @@ namespace crm.Controllers
         // POST: Complaints/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [Authorize]
+        [Authorize(Roles = "Admin, User")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,CustomerId,CompanyId,Description,Status")] Complaints complaints)
@@ -126,7 +151,7 @@ namespace crm.Controllers
         }
 
         // GET: Complaints/Delete/5
-        [Authorize]
+        [Authorize(Roles = "Admin, User")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Complaints == null)
@@ -145,7 +170,7 @@ namespace crm.Controllers
         }
 
         // POST: Complaints/Delete/5
-        [Authorize]
+        [Authorize(Roles = "Admin, User")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

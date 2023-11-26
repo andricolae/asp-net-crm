@@ -1,13 +1,14 @@
-﻿@model IEnumerable<crm.Models.Complaints>
+﻿@using crm.Controllers;
+@model IEnumerable<crm.Models.Complaints>
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1>Complaints</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">ADD COMPLAINT</a>
 </p>
 <table class="table">
     <thead>

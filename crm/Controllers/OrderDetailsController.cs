@@ -21,7 +21,7 @@ namespace crm.Controllers
         }
 
         // GET: OrderDetails
-        [Authorize]
+        [Authorize(Roles = "Admin, User")]
         public async Task<IActionResult> Index()
         {
               return _context.OrderDetails != null ? 
@@ -30,7 +30,7 @@ namespace crm.Controllers
         }
 
         // GET: OrderDetails/Details/5
-        [Authorize]
+        [Authorize(Roles = "Admin, User")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.OrderDetails == null)
@@ -49,7 +49,7 @@ namespace crm.Controllers
         }
 
         // GET: OrderDetails/Create
-        [Authorize]
+        [Authorize(Roles = "Admin, User")]
         public IActionResult Create()
         {
             return View();
@@ -58,7 +58,7 @@ namespace crm.Controllers
         // POST: OrderDetails/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [Authorize]
+        [Authorize(Roles = "Admin, User")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,OrderId,ProductId,Quantity,Price")] OrderDetails orderDetails)
@@ -73,7 +73,7 @@ namespace crm.Controllers
         }
 
         // GET: OrderDetails/Edit/5
-        [Authorize]
+        [Authorize(Roles = "Admin, User")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.OrderDetails == null)
@@ -92,7 +92,7 @@ namespace crm.Controllers
         // POST: OrderDetails/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [Authorize]
+        [Authorize(Roles = "Admin, User")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,OrderId,ProductId,Quantity,Price")] OrderDetails orderDetails)
@@ -126,7 +126,7 @@ namespace crm.Controllers
         }
 
         // GET: OrderDetails/Delete/5
-        [Authorize]
+        [Authorize(Roles = "Admin, User")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.OrderDetails == null)
@@ -145,7 +145,7 @@ namespace crm.Controllers
         }
 
         // POST: OrderDetails/Delete/5
-        [Authorize]
+        [Authorize(Roles = "Admin, User")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
