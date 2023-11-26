@@ -29,12 +29,15 @@ namespace crm.Controllers
         [Authorize(Roles = "Admin, User")]
         public async Task<IActionResult> Index()
         {
-            var userComplaints = _context.Complaints.Where(c => c.UserId == GetCurrentUserId()).ToList();
+            if (User.IsInRole("Admin"))
+            {
+                return _context.Complaints != null ?
+                    View(await _context.Complaints.ToListAsync()) :
+                    Problem("Entity set 'ApplicationDbContext.OrderDetails'  is null.");
+            }
 
+            var userComplaints = _context.Complaints.Where(c => c.UserId == GetCurrentUserId()).ToList();
             return View(userComplaints);
-            //return _context.Complaints != null ? 
-            //              View(await _context.Complaints.ToListAsync()) :
-            //              Problem("Entity set 'ApplicationDbContext.Complaints'  is null.");
         }
 
         // GET: Complaints/Details/5
@@ -87,14 +90,6 @@ namespace crm.Controllers
             }
 
             return View(complaints);
-
-            //if (ModelState.IsValid)
-            //{
-            //    _context.Add(complaints);
-            //    await _context.SaveChangesAsync();
-            //    return RedirectToAction(nameof(Index));
-            //}
-            //return View(complaints);
         }
 
         // GET: Complaints/Edit/5

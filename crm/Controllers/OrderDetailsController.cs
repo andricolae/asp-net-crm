@@ -8,6 +8,10 @@ using Microsoft.EntityFrameworkCore;
 using crm.Data;
 using crm.Models;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+using System.Drawing.Text;
+using Microsoft.CodeAnalysis;
+using Microsoft.AspNetCore.Identity;
 
 namespace crm.Controllers
 {
@@ -19,14 +23,24 @@ namespace crm.Controllers
         {
             _context = context;
         }
+        public string GetCurrentUserId()
+        {
+            return User.FindFirstValue(ClaimTypes.NameIdentifier);
+        }
 
         // GET: OrderDetails
         [Authorize(Roles = "Admin, User")]
         public async Task<IActionResult> Index()
         {
-              return _context.OrderDetails != null ? 
-                          View(await _context.OrderDetails.ToListAsync()) :
-                          Problem("Entity set 'ApplicationDbContext.OrderDetails'  is null.");
+            if (User.IsInRole("Admin"))
+            {
+                return _context.OrderDetails != null ? 
+                              View(await _context.OrderDetails.ToListAsync()) :
+                              Problem("Entity set 'ApplicationDbContext.OrderDetails'  is null.");
+            }
+
+            var userOrders = _context.OrderDetails.Where(c => c.UserId == GetCurrentUserId()).ToList();
+            return View(userOrders);
         }
 
         // GET: OrderDetails/Details/5
@@ -52,6 +66,7 @@ namespace crm.Controllers
         [Authorize(Roles = "Admin, User")]
         public IActionResult Create()
         {
+            ViewBag.UserId = GetCurrentUserId();
             return View();
         }
 
@@ -61,8 +76,20 @@ namespace crm.Controllers
         [Authorize(Roles = "Admin, User")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,OrderId,ProductId,Quantity,Price")] OrderDetails orderDetails)
+        public async Task<IActionResult> Create([Bind("Id,OrderId,ProductId,Quantity,Price,UserId")] OrderDetails orderDetails)
         {
+            orderDetails.OrderId = 0;
+
+            var price = _context.Product.Where(p => p.Id == int.Parse(Request.Form["ProductId"])).FirstOrDefault().Price;
+
+            orderDetails.Quantity = int.Parse(Request.Form["Quantity"]);            
+
+            orderDetails.Price = int.Parse(Request.Form["Quantity"]) * price;
+
+            ViewBag.Price = int.Parse(Request.Form["Quantity"]) * price;
+
+            orderDetails.UserId = GetCurrentUserId();
+
             if (ModelState.IsValid)
             {
                 _context.Add(orderDetails);

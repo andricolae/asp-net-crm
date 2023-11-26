@@ -102,6 +102,11 @@ namespace crm.Areas.Identity.Pages.Account
             public string ConfirmPassword { get; set; }
         }
 
+        public async Task<string> GetUserDetailsAsync(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            return user.UserName;
+        }
 
         public async Task OnGetAsync(string returnUrl = null)
         {
