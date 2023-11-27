@@ -21,7 +21,7 @@ namespace crm.Controllers
         }
 
         // GET: Products
-        [Authorize(Roles = "Admin, User")]
+        
         public async Task<IActionResult> Index()
         {
               return _context.Product != null ? 
